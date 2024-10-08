@@ -8,32 +8,31 @@ import Dashboard from './routes/dashboard/Dashboard.jsx'
 import Chat from './routes/chat/Chat.jsx'
 import Signin from './routes/signin/Signin.jsx'
 import Login from './routes/login/Login.jsx'
+import RootLayout from './layouts/rootLayout/RootLayout.jsx'
+import DashboardLayout from './layouts/dashboardLayout/DashboardLayout.jsx'
 
 const router = createBrowserRouter([
   {
-    path: '/',
-    element: <HomePage />,
-  },
-  {
-    path: '/dashboard',
+    element: <RootLayout />,
     children: [
       {
-        path: '/dashboard',
-        element: <Dashboard />,
+        path: '/',
+        element: <HomePage />,
       },
       {
-        path: '/dashboard/:id',
-        element: <Chat />,
+        element: <DashboardLayout />,
+        children: [
+          {
+            path: '/dashboard',
+            element: <Dashboard />,
+          },
+          {
+            path: '/dashboard/chat/:id',
+            element: <Chat />,
+          },
+        ],
       },
     ],
-  },
-  {
-    path: '/signin',
-    element: <Signin />,
-  },
-  {
-    path: '/login',
-    element: <Login />,
   },
 ])
 

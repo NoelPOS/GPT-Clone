@@ -8,3 +8,8 @@ body {
   background: rgb(14, 22, 38);
   color: whitesmoke;
 }
+
+a {
+  text-decoration: none;
+  color: purple;
+}
