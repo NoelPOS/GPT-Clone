@@ -20,8 +20,8 @@ const DashboardLayout = () => {
 
   return (
     <div className='dashboardlayout'>
-      <div className='right'>Menu</div>
-      <div className='left'>
+      <div className='menu'>Menu</div>
+      <div className='content'>
         <Outlet />
       </div>
     </div>
