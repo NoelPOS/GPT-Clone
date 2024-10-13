@@ -1,0 +1,123 @@
+.homepage {
+  display: flex;
+  align-items: center;
+  gap: 100px;
+  height: 100%;
+
+  .orbital {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    opacity: 0.2;
+    animation: 50s linear infinite orbital;
+    z-index: -1;
+  }
+
+  .left {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    text-align: center;
+
+    h1 {
+      font-size: 128px;
+      background: linear-gradient(to right, #217bfe, #e55571);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    h3 {
+      font-weight: 400;
+      max-width: 70%;
+    }
+
+    a {
+      padding: 15px 25px;
+      background-color: #217bfe;
+      color: white;
+      border-radius: 20px;
+      font-size: 14px;
+      margin-top: 20px;
+
+      &:hover {
+        background-color: white;
+        color: #217bfe;
+      }
+    }
+  }
+
+  .right {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+
+    .imgcontainer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #140e2d;
+      border-radius: 50px;
+      width: 90%;
+      height: 60%;
+      position: relative;
+
+      .bgcontainer {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        position: absolute;
+        top: 0;
+        left: 0;
+        border-radius: 50px;
+        .bg {
+          background-image: url('./bg.png');
+          width: 200%;
+          height: 100%;
+          opacity: 0.5;
+          background-size: auto 100%;
+          animation: 5s ease-in-out alternate infinite bganimation;
+        }
+      }
+
+      .bot {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        animation: 3s ease-in-out infinite alternate botAnimate;
+      }
+    }
+  }
+}
+
+@keyframes orbital {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(60deg);
+  }
+}
+
+@keyframes bganimation {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes botAnimate {
+  0% {
+    transform: scale(1) rotate(0deg);
+  }
+  100% {
+    transform: scale(1.1) rotate(-5deg);
+  }
+}
