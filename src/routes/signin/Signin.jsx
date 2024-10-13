@@ -5,7 +5,7 @@ import './Signin.css'
 const Signin = () => {
   return (
     <div className='signinpage'>
-      <SignIn path='/signin' signUpUrl='/login' />
+      <SignIn path='/signin' signUpUrl='/login' forceRedirectUrl='/dashboard' />
     </div>
   )
 }

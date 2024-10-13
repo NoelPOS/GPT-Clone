@@ -42,23 +42,22 @@ const HomePage = () => {
               sequence={[
                 // Same substring at the start will only be typed out once, initially
                 ' Human1: We produce food for Mice',
-                1000,
+                2000,
                 () => {
                   setTypingStatus('human1')
                 },
                 'Bot: We produce food for Hamsters',
-                1000,
+                2000,
                 () => {
                   setTypingStatus('bot')
                 },
                 'Human2: We produce food for Guinea Pigs',
-                1000,
+                2000,
                 () => {
                   setTypingStatus('human2')
                 },
               ]}
               wrapper='span'
-              speed={100}
               style={{ fontSize: '2em', display: 'inline-block' }}
               repeat={Infinity}
               cursor={true}
