@@ -65,12 +65,12 @@
 
 /* Style the scrollbar track */
 ::-webkit-scrollbar {
-  width: 5px;
+  width: 2px;
 }
 
 /* Style the scrollbar thumb */
 ::-webkit-scrollbar-thumb {
-  background: #bf0d0d;
+  background: purple;
   border-radius: 10px;
 }
 
