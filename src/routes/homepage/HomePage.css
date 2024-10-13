@@ -91,6 +91,25 @@
         object-fit: contain;
         animation: 3s ease-in-out infinite alternate botAnimate;
       }
+
+      .chat {
+        position: absolute;
+        bottom: -50px;
+        right: -50px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 20px;
+        background-color: #2c2937;
+        border-radius: 10px;
+
+        img {
+          width: 32px;
+          height: 32px;
+          border-radius: 50%;
+          object-fit: cover;
+        }
+      }
     }
   }
 }
