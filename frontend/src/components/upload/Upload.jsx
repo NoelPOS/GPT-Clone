@@ -24,6 +24,7 @@ const authenticator = async () => {
 }
 
 const Upload = ({ setImg }) => {
+  const uploadRef = React.useRef(null)
   const onError = (err) => {
     console.log('Error', err)
   }
@@ -39,6 +40,10 @@ const Upload = ({ setImg }) => {
 
   const onUploadProgress = (progress) => {
     console.log('Progress', progress)
+    setImg((prev) => ({
+      ...prev,
+      isLoading: true,
+    }))
   }
 
   const onUploadStart = (evt) => {
@@ -59,7 +64,14 @@ const Upload = ({ setImg }) => {
           useUniqueFileName={true}
           onUploadProgress={onUploadProgress}
           onUploadStart={onUploadStart}
+          style={{ display: 'none' }}
+          ref={uploadRef}
         />
+        {
+          <label onClick={() => uploadRef.current.click()}>
+            <img src='/attachment.png' alt='' />
+          </label>
+        }
       </IKContext>
     </div>
   )

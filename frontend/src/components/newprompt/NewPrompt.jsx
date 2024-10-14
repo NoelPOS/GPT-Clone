@@ -5,7 +5,7 @@ import { IKImage } from 'imagekitio-react'
 
 const NewPrompt = () => {
   const [img, setImg] = useState({
-    isLoading: true,
+    isLoading: false,
     dbData: {},
   })
   const endRef = useRef(null)
