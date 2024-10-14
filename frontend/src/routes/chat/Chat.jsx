@@ -34,9 +34,9 @@ const Chat = () => {
           <div className='message user'>Message from user</div>
           <div className='message'>Message from ai</div>
           <div className='message user'>Message form human</div>
+          <NewPrompt />
         </div>
         <div ref={endRef}></div>
-        <NewPrompt />
       </div>
     </div>
   )
