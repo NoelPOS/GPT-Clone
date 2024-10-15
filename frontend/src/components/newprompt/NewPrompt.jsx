@@ -15,14 +15,37 @@ const NewPrompt = () => {
   })
   const endRef = useRef(null)
 
+  const chat = model.startChat({
+    history: [
+      {
+        role: 'user',
+        parts: [{ text: 'Hello, my name is Noel' }],
+      },
+      {
+        role: 'model',
+        parts: [{ text: 'Great to meet you. What would you like to know?' }],
+      },
+    ],
+  })
+
   const add = async (text) => {
     setQuestion(text)
 
-    const result = await model.generateContent(
+    const result = await chat.sendMessageStream(
       Object.entries(img.aiData).length ? [img.aiData, text] : [text]
     )
-    const data = await result.response
-    setAnswer(data.text())
+    let accumulatedText = ''
+    for await (const chunk of result.stream) {
+      const chunkText = chunk.text()
+      accumulatedText += chunkText
+      setAnswer(accumulatedText)
+    }
+
+    setImg({
+      isLoading: false,
+      dbData: {},
+      aiData: {},
+    })
   }
 
   const handleSubmit = async (e) => {
