@@ -1,9 +1,7 @@
 import React from 'react'
 import './Dashboard.css'
-import { useAuth } from '@clerk/clerk-react'
 
 const Dashboard = () => {
-  const { userId } = useAuth()
   const handleSubmit = async (e) => {
     e.preventDefault()
     const text = e.target.text.value

@@ -4,9 +4,14 @@ import ImageKit from 'imagekit'
 import mongoose from 'mongoose'
 import Chat from './models/Chat.js'
 import UserChat from './models/UserChats.js'
+import path from 'path'
+import url, { fileURLToPath } from 'url'
 import { ClerkExpressRequireAuth } from '@clerk/clerk-sdk-node'
 
 const Port = process.env.PORT || 3000
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 const imagekit = new ImageKit({
   urlEndpoint: process.env.IMAGE_KIT_ENDPOINT_URL,
