@@ -5,7 +5,7 @@ import { IKImage } from 'imagekitio-react'
 import model from '../../lib/gemini'
 import Markdown from 'react-markdown'
 
-const NewPrompt = () => {
+const NewPrompt = ({ chatId, chat }) => {
   const [question, setQuestion] = useState('')
   const [answer, setAnswer] = useState('')
   const [img, setImg] = useState({

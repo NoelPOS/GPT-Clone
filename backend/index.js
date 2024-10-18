@@ -6,7 +6,6 @@ import Chat from './models/Chat.js'
 import UserChat from './models/UserChats.js'
 import path from 'path'
 import url, { fileURLToPath } from 'url'
-import { ClerkExpressRequireAuth } from '@clerk/clerk-sdk-node'
 
 const Port = process.env.PORT || 3000
 
@@ -42,9 +41,8 @@ app.get('/api/upload', (req, res) => {
   res.send(result)
 })
 
-app.post('/api/chats', ClerkExpressRequireAuth(), async (req, res) => {
-  const userId = req.auth.userId
-  const { text } = req.body
+app.post('/api/chats', async (req, res) => {
+  const { userId, text } = req.body
   try {
     const newChat = new Chat({
       userId: userId,
@@ -86,22 +84,22 @@ app.post('/api/chats', ClerkExpressRequireAuth(), async (req, res) => {
   }
 })
 
-app.get('/api/userchats', ClerkExpressRequireAuth(), async (req, res) => {
-  const userId = req.auth.userId
-
+app.get('/api/userchats/:id', async (req, res) => {
+  const userId = req.params.id
   try {
     const userChats = await UserChat.findOne({ userId })
-    res.status(200).send(userChats[0].chats)
+    res.status(200).send(userChats.chats)
   } catch (err) {
     console.log(err)
     res.status(500).send('Error fetching user chats')
   }
 })
 
-app.get('/api/chats/:id', ClerkExpressRequireAuth(), async (req, res) => {
-  const userId = req.auth.userId
-  const chatId = req.params.id
+app.get('/api/chats/:cid/:uid', async (req, res) => {
+  const chatId = req.params.cid
+  const userId = req.params.uid
 
+  console.log(chatId, userId)
   try {
     const chat = await Chat.findOne({ _id: chatId, userId: userId })
     res.status(200).send(chat)
@@ -111,8 +109,8 @@ app.get('/api/chats/:id', ClerkExpressRequireAuth(), async (req, res) => {
   }
 })
 
-app.put('/api/chats/:id', ClerkExpressRequireAuth(), async (req, res) => {
-  const userId = req.auth.userId
+app.put('/api/chats/:id', async (req, res) => {
+  const { userId } = req.body
   const chatId = req.params.id
 
   const { question, answer, img } = req.body
@@ -151,18 +149,13 @@ app.put('/api/chats/:id', ClerkExpressRequireAuth(), async (req, res) => {
   }
 })
 
-app.use((err, req, res, next) => {
-  console.error(err.stack)
-  res.status(401).send('Unauthorized')
-})
-
 // Production
 
-app.use(express.static(path.join(__dirname, '../frontend/build')))
+// app.use(express.static(path.join(__dirname, '../frontend/build')))
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/dist', 'index.html'))
-})
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, '../client/dist', 'index.html'))
+// })
 
 app.listen(Port, () => {
   connect()

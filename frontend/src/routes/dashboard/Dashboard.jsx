@@ -1,18 +1,24 @@
 import React from 'react'
 import './Dashboard.css'
+import { useAuth } from '@clerk/clerk-react'
+import { useNavigate } from 'react-router-dom'
 
 const Dashboard = () => {
+  const { userId } = useAuth()
+  const navigate = useNavigate()
   const handleSubmit = async (e) => {
     e.preventDefault()
     const text = e.target.text.value
-    await fetch('http://localhost:3000/api/chats', {
+    const chatId = await fetch(`${import.meta.env.VITE_API_URL}/api/chats`, {
       method: 'POST',
-      credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ userId, text }),
-    })
+      credentials: 'include',
+    }).then((res) => res.text())
+
+    navigate(`/chat/${chatId}`)
   }
   return (
     <div className='dashboardPage'>

@@ -1,8 +1,19 @@
 import React from 'react'
+import { useState, useEffect } from 'react'
 import './ChatList.css'
 import { Link } from 'react-router-dom'
+import { useAuth } from '@clerk/clerk-react'
 
 const ChatList = () => {
+  const { userId } = useAuth()
+  const [chats, setChats] = useState([])
+
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_API_URL}/api/userchats/${userId}`)
+      .then((res) => res.json())
+      .then((data) => setChats(data))
+  }, [userId])
+
   return (
     <div className='chatlist'>
       <span className='title'>Dashboard</span>
@@ -14,15 +25,12 @@ const ChatList = () => {
 
       <span className='title'>Recent Chats</span>
       <div className='list'>
-        <Link to='/dashboard/chat/1'>Chat 1</Link>
-        <Link to='/dashboard/chat/2'>Chat 2</Link>
-        <Link to='/dashboard/chat/3'>Chat 3</Link>
-        <Link to='/dashboard/chat/4'>Chat 4</Link>
-        <Link to='/dashboard/chat/5'>Chat 5</Link>
-        <Link to='/dashboard/chat/5'>Chat 5</Link>
-        <Link to='/dashboard/chat/5'>Chat 5</Link>
-        <Link to='/dashboard/chat/5'>Chat 5</Link>
-        <Link to='/dashboard/chat/5'>Chat 5</Link>
+        {chats &&
+          chats.map((chat) => (
+            <Link to={`/dashboard/chat/${chat._id}`} key={chat._id}>
+              {chat.title}
+            </Link>
+          ))}
       </div>
 
       <hr />
