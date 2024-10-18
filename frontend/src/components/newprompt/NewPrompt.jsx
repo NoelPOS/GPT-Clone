@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import './NewPrompt.css'
 import Upload from '../upload/Upload'
 import { IKImage } from 'imagekitio-react'
@@ -54,6 +54,10 @@ const NewPrompt = () => {
     add(text)
   }
 
+  useEffect(() => {
+    endRef.current.scrollIntoView({ behavior: 'smooth' })
+  }, [answer])
+
   return (
     <>
       {img.isLoading && <div>Loading...</div>}
@@ -70,7 +74,7 @@ const NewPrompt = () => {
           <Markdown>{answer}</Markdown>
         </div>
       )}
-      <div className='endChat' ref={endRef}></div>
+
       <form className='newForm' onSubmit={handleSubmit}>
         <Upload setImg={setImg} />
         <input id='file' type='file' multiple={false} hidden />
@@ -79,6 +83,7 @@ const NewPrompt = () => {
           <img src='/arrow.png' alt='' />
         </button>
       </form>
+      <div className='endChat' ref={endRef}></div>
     </>
   )
 }
