@@ -18,30 +18,36 @@ const ChatPage = () => {
       .then((data) => setChat(data))
   }, [chatId])
 
+  console.log(chat)
+
   return (
     <div className='chatPage'>
       <div className='wrapper'>
         <div className='chat'>
-          {chat && (
-            <>
-              {chat.history.map((item, index) => (
-                <div key={index} className={`message ${item.role}`}>
-                  {item.parts.map((part, index) => (
-                    <div key={index}>
-                      {part.text && <Markdown>{part.text}</Markdown>}
-                      {part.img && (
-                        <IKImage
-                          className='image'
-                          path={part.img}
-                          lqip={{ active: true }}
-                        />
-                      )}
-                    </div>
-                  ))}
+          {chat &&
+            chat?.history?.map((message, i) => (
+              <>
+                {message.img && (
+                  <IKImage
+                    urlEndpoint={import.meta.env.VITE_IMAGE_KIT_ENDPOINT}
+                    path={message.img}
+                    height='300'
+                    width='400'
+                    transformation={[{ height: 300, width: 400 }]}
+                    loading='lazy'
+                    lqip={{ active: true, quality: 20 }}
+                  />
+                )}
+                <div
+                  className={
+                    message.role === 'user' ? 'message user' : 'message'
+                  }
+                  key={i}
+                >
+                  <Markdown>{message.parts[0].text}</Markdown>
                 </div>
-              ))}
-            </>
-          )}
+              </>
+            ))}
 
           <NewPrompt chatId={chatId} data={chat} />
         </div>

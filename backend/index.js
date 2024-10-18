@@ -115,6 +115,8 @@ app.put('/api/chats/:id', async (req, res) => {
 
   const { question, answer, img } = req.body
 
+  console.log('img', img)
+
   if (img) {
     const newItems = [
       {
@@ -123,7 +125,7 @@ app.put('/api/chats/:id', async (req, res) => {
       },
       {
         role: 'model',
-        parts: [{ text: answer }, { img }],
+        parts: [{ text: answer }, { img: img }],
       },
     ]
 

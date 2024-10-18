@@ -50,7 +50,7 @@ const NewPrompt = ({ chatId, data }) => {
           userId,
           question: text,
           answer: accumulatedText,
-          img: img.dbData?.filePath,
+          img: img.dbData.url,
         }),
       }
     ).then((res) => res.json())
