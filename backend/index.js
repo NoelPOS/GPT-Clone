@@ -115,37 +115,63 @@ app.put('/api/chats/:id', async (req, res) => {
 
   const { question, answer, img } = req.body
 
-  const newItems = [
-    ...(question
-      ? [
-          {
-            role: 'user',
-            parts: [
-              {
-                text: question,
-              },
-            ],
-            ...(img && { img }),
-          },
-        ]
-      : []),
-  ]
-
-  try {
-    const updatedChat = await Chat.updateOne(
-      { _id: chatId, userId: userId },
+  if (img) {
+    const newItems = [
       {
-        $push: {
-          history: {
-            $each: newItems,
+        role: 'user',
+        parts: [{ text: question }],
+      },
+      {
+        role: 'model',
+        parts: [{ text: answer }, { img }],
+      },
+    ]
+
+    try {
+      const updatedChat = await Chat.updateOne(
+        { _id: chatId, userId: userId },
+        {
+          $push: {
+            history: {
+              $each: newItems,
+            },
           },
-        },
-      }
-    )
-    res.status(200).send(updatedChat)
-  } catch (err) {
-    console.log(err)
-    res.status(500).send('Error adding conversation')
+        }
+      )
+      res.status(200).send(updatedChat)
+    } catch (err) {
+      console.log(err)
+      res.status(500).send('Error adding conversation')
+    }
+  } else {
+    const newItems = [
+      {
+        role: 'user',
+        parts: [{ text: question }],
+      },
+
+      {
+        role: 'model',
+        parts: [{ text: answer }],
+      },
+    ]
+
+    try {
+      const updatedChat = await Chat.updateOne(
+        { _id: chatId, userId: userId },
+        {
+          $push: {
+            history: {
+              $each: newItems,
+            },
+          },
+        }
+      )
+      res.status(200).send(updatedChat)
+    } catch (err) {
+      console.log(err)
+      res.status(500).send('Error adding conversation')
+    }
   }
 })
 

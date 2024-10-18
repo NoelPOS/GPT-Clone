@@ -4,8 +4,10 @@ import Upload from '../upload/Upload'
 import { IKImage } from 'imagekitio-react'
 import model from '../../lib/gemini'
 import Markdown from 'react-markdown'
+import { useAuth } from '@clerk/clerk-react'
 
-const NewPrompt = ({ chatId, chat }) => {
+const NewPrompt = ({ chatId, data }) => {
+  const { userId } = useAuth()
   const [question, setQuestion] = useState('')
   const [answer, setAnswer] = useState('')
   const [img, setImg] = useState({
@@ -16,16 +18,12 @@ const NewPrompt = ({ chatId, chat }) => {
   const endRef = useRef(null)
 
   const chat = model.startChat({
-    history: [
-      {
-        role: 'user',
-        parts: [{ text: 'Hello, my name is Noel' }],
-      },
-      {
-        role: 'model',
-        parts: [{ text: 'Great to meet you. What would you like to know?' }],
-      },
-    ],
+    // history: [
+    //   data?.history.map(({ role, parts }) => ({
+    //     role,
+    //     parts: [{ text: parts[0].text }],
+    //   })),
+    // ],
   })
 
   const add = async (text) => {
@@ -41,11 +39,32 @@ const NewPrompt = ({ chatId, chat }) => {
       setAnswer(accumulatedText)
     }
 
+    const updatedChat = await fetch(
+      `${import.meta.env.VITE_API_URL}/api/chats/${chatId}`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId,
+          question: text,
+          answer: accumulatedText,
+          img: img.dbData?.filePath,
+        }),
+      }
+    ).then((res) => res.json())
+
     setImg({
       isLoading: false,
       dbData: {},
       aiData: {},
     })
+
+    // setQuestion('')
+    // setAnswer('')
+
+    return updatedChat
   }
 
   const handleSubmit = async (e) => {
