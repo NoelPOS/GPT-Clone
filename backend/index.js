@@ -36,12 +36,12 @@ app.use(
 )
 app.use(express.json())
 
-app.get('/api/upload', (req, res) => {
+app.get('api/upload', (req, res) => {
   var result = imagekit.getAuthenticationParameters()
   res.send(result)
 })
 
-app.post('/api/chats', async (req, res) => {
+app.post('api/chats', async (req, res) => {
   const { userId, text, result } = req.body
 
   try {
@@ -88,7 +88,7 @@ app.post('/api/chats', async (req, res) => {
   }
 })
 
-app.get('/api/userchats/:id', async (req, res) => {
+app.get('api/userchats/:id', async (req, res) => {
   const userId = req.params.id
   try {
     const userChats = await UserChat.findOne({ userId })
@@ -104,7 +104,7 @@ app.get('/api/userchats/:id', async (req, res) => {
   }
 })
 
-app.get('/api/chats/:cid/:uid', async (req, res) => {
+app.get('api/chats/:cid/:uid', async (req, res) => {
   const chatId = req.params.cid
   const userId = req.params.uid
 
@@ -118,7 +118,7 @@ app.get('/api/chats/:cid/:uid', async (req, res) => {
   }
 })
 
-app.put('/api/chats/:id', async (req, res) => {
+app.put('api/chats/:id', async (req, res) => {
   const { userId } = req.body
   const chatId = req.params.id
 
