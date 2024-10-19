@@ -23,7 +23,8 @@ const connect = async () => {
     await mongoose.connect(process.env.MONGODB_URI)
     console.log('Connected to MongoDB')
   } catch (e) {
-    console.log(e)
+    console.error('MongoDB connection error:', e)
+    process.exit(1) // Ensure the app stops if connection fails
   }
 }
 
@@ -31,17 +32,30 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 
-app.get('api/upload', (req, res) => {
-  var result = imagekit.getAuthenticationParameters()
-  res.send(result)
+app.get('/api/upload', (req, res) => {
+  try {
+    const result = imagekit.getAuthenticationParameters()
+    res.status(200).send(result)
+  } catch (e) {
+    console.error('Error getting ImageKit auth params:', e)
+    res
+      .status(500)
+      .send('Failed to generate ImageKit authentication parameters')
+  }
 })
 
-app.post('api/chats', async (req, res) => {
+app.post('/api/chats', async (req, res) => {
   const { userId, text, result } = req.body
+
+  if (!userId || !text || !result) {
+    return res
+      .status(400)
+      .send('Missing required fields: userId, text, or result')
+  }
 
   try {
     const newChat = new Chat({
-      userId: userId,
+      userId,
       history: [
         { role: 'user', parts: [{ text }] },
         { role: 'model', parts: [{ text: result }] },
@@ -49,11 +63,11 @@ app.post('api/chats', async (req, res) => {
     })
     const savedChat = await newChat.save()
 
-    const userChats = await UserChat.find({ userId: userId })
+    const userChats = await UserChat.find({ userId })
 
     if (!userChats.length) {
       const newUserChats = new UserChat({
-        userId: userId,
+        userId,
         chats: [
           {
             _id: savedChat.id,
@@ -64,7 +78,7 @@ app.post('api/chats', async (req, res) => {
       await newUserChats.save()
     } else {
       await UserChat.updateOne(
-        { userId: userId },
+        { userId },
         {
           $push: {
             chats: {
@@ -74,111 +88,102 @@ app.post('api/chats', async (req, res) => {
           },
         }
       )
-
-      res.status(201).send(newChat.id)
     }
+
+    res.status(201).send({ chatId: savedChat.id })
   } catch (e) {
-    console.log(e)
-    res.status(500).send('Internal Server Error')
+    console.error('Error saving chat or updating user chats:', e)
+    res.status(500).send('Failed to save chat or update user chats')
   }
 })
 
-app.get('api/userchats/:id', async (req, res) => {
+app.get('/api/userchats/:id', async (req, res) => {
   const userId = req.params.id
   try {
     const userChats = await UserChat.findOne({ userId })
 
     if (!userChats) {
-      res.status(200).send([])
-    } else {
-      res.status(200).send(userChats.chats)
+      return res.status(404).send('No chats found for this user')
     }
-  } catch (err) {
-    console.log(err)
-    res.status(500).send('Error fetching user chats')
+
+    res.status(200).send(userChats.chats)
+  } catch (e) {
+    console.error('Error fetching user chats:', e)
+    res.status(500).send('Failed to fetch user chats')
   }
 })
 
-app.get('api/chats/:cid/:uid', async (req, res) => {
+app.get('/api/chats/:cid/:uid', async (req, res) => {
   const chatId = req.params.cid
   const userId = req.params.uid
 
-  // console.log(chatId, userId)
   try {
-    const chat = await Chat.findOne({ _id: chatId, userId: userId })
+    const chat = await Chat.findOne({ _id: chatId, userId })
+
+    if (!chat) {
+      return res.status(404).send('Chat not found')
+    }
+
     res.status(200).send(chat)
-  } catch (err) {
-    console.log(err)
-    res.status(500).send('Error fetching chat')
+  } catch (e) {
+    console.error('Error fetching chat:', e)
+    res.status(500).send('Failed to fetch chat')
   }
 })
 
-app.put('api/chats/:id', async (req, res) => {
-  const { userId } = req.body
+app.put('/api/chats/:id', async (req, res) => {
+  const { userId, question, answer, img } = req.body
   const chatId = req.params.id
 
-  const { question, answer, img } = req.body
+  if (!userId || !question || !answer) {
+    return res
+      .status(400)
+      .send('Missing required fields: userId, question, or answer')
+  }
 
-  // console.log('img', img)
-
-  if (img) {
-    const newItems = [
-      {
-        role: 'user',
-        parts: [{ text: question }],
-        img: img,
-      },
-      {
-        role: 'model',
-        parts: [{ text: answer }],
-      },
-    ]
-
-    try {
-      const updatedChat = await Chat.updateOne(
-        { _id: chatId, userId: userId },
+  const newItems = img
+    ? [
         {
-          $push: {
-            history: {
-              $each: newItems,
-            },
-          },
-        }
-      )
-      res.status(200).send(updatedChat)
-    } catch (err) {
-      console.log(err)
-      res.status(500).send('Error adding conversation')
-    }
-  } else {
-    const newItems = [
-      {
-        role: 'user',
-        parts: [{ text: question }],
-      },
-
-      {
-        role: 'model',
-        parts: [{ text: answer }],
-      },
-    ]
-
-    try {
-      const updatedChat = await Chat.updateOne(
-        { _id: chatId, userId: userId },
+          role: 'user',
+          parts: [{ text: question }],
+          img,
+        },
         {
-          $push: {
-            history: {
-              $each: newItems,
-            },
+          role: 'model',
+          parts: [{ text: answer }],
+        },
+      ]
+    : [
+        {
+          role: 'user',
+          parts: [{ text: question }],
+        },
+        {
+          role: 'model',
+          parts: [{ text: answer }],
+        },
+      ]
+
+  try {
+    const updatedChat = await Chat.updateOne(
+      { _id: chatId, userId },
+      {
+        $push: {
+          history: {
+            $each: newItems,
           },
-        }
-      )
-      res.status(200).send(updatedChat)
-    } catch (err) {
-      console.log(err)
-      res.status(500).send('Error adding conversation')
+        },
+      }
+    )
+
+    if (!updatedChat.matchedCount) {
+      return res.status(404).send('Chat not found for update')
     }
+
+    res.status(200).send('Chat updated successfully')
+  } catch (e) {
+    console.error('Error updating chat:', e)
+    res.status(500).send('Failed to update chat')
   }
 })
 
@@ -192,5 +197,5 @@ app.put('api/chats/:id', async (req, res) => {
 
 app.listen(Port, () => {
   connect()
-  console.log('Server is running on port 3000')
+  console.log(`Server is running on port ${Port}`)
 })
