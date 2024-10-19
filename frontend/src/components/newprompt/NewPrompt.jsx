@@ -69,6 +69,7 @@ const NewPrompt = ({ chatId, data, setAdd }) => {
     e.preventDefault()
     const text = e.target.text.value
     add(text)
+    e.target.text.value = ''
   }
 
   useEffect(() => {
