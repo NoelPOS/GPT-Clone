@@ -12,7 +12,7 @@ const ChatList = () => {
     fetch(`${import.meta.env.VITE_API_URL}/api/userchats/${userId}`)
       .then((res) => res.json())
       .then((data) => setChats(data))
-  }, [userId])
+  }, [userId, chats])
 
   return (
     <div className='chatlist'>
@@ -25,23 +25,16 @@ const ChatList = () => {
 
       <span className='title'>Recent Chats</span>
       <div className='list'>
-        {chats &&
+        {chats.length > 0 &&
           chats.map((chat) => (
             <Link to={`/dashboard/chat/${chat._id}`} key={chat._id}>
               {chat.title}
             </Link>
           ))}
+        {chats.length === 0 && <span>No chats yet</span>}
       </div>
 
       <hr />
-
-      <div className='upgrade'>
-        <img src='/logo.png' alt='' />
-        <div className='texts'>
-          <span>Upgrade to Lama AI Pro</span>
-          <span>Get unlimited access to all features</span>
-        </div>
-      </div>
     </div>
   )
 }

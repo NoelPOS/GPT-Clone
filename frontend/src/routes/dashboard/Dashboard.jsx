@@ -30,7 +30,7 @@ const Dashboard = () => {
       <div className='texts'>
         <div className='logo'>
           <img src='/logo.png' alt='' />
-          <h1>LAMA AI</h1>
+          <h1>GPT Clone</h1>
         </div>
         <div className='options'>
           <div className='option'>

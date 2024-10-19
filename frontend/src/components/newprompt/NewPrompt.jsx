@@ -56,11 +56,11 @@ const NewPrompt = ({ chatId, data, setAdd }) => {
       }
     ).then((res) => res.json())
 
-    setImg({
-      isLoading: false,
-      dbData: {},
-      aiData: {},
-    })
+    // setImg({
+    //   isLoading: false,
+    //   dbData: {},
+    //   aiData: {},
+    // })
 
     return updatedChat
   }
@@ -79,12 +79,8 @@ const NewPrompt = ({ chatId, data, setAdd }) => {
   return (
     <>
       {img.isLoading && <div>Loading...</div>}
-      {img.dbData?.filePath && (
-        <IKImage
-          urlEndpoint={import.meta.env.VITE_IMAGE_KIT_ENDPOINT_URL}
-          path={img.dbData?.filePath}
-          width='380'
-        />
+      {img.dbData?.url && (
+        <img src={img.dbData.url} alt='' style={{ width: '100%' }} />
       )}
       {question && <div className='message user'>{question}</div>}
       {answer && (

@@ -17,9 +17,7 @@ const ChatPage = () => {
     fetch(`${import.meta.env.VITE_API_URL}/api/chats/${chatId}/${userId}`, {})
       .then((res) => res.json())
       .then((data) => setChat(data))
-  }, [add])
-
-  console.log(chat)
+  }, [add, chatId, userId])
 
   return (
     <div className='chatPage'>
@@ -29,15 +27,7 @@ const ChatPage = () => {
             chat?.history?.map((message, i) => (
               <>
                 {message.img && (
-                  <IKImage
-                    urlEndpoint={import.meta.env.VITE_IMAGE_KIT_ENDPOINT}
-                    path={message.img}
-                    height='300'
-                    width='400'
-                    transformation={[{ height: 300, width: 400 }]}
-                    loading='lazy'
-                    lqip={{ active: true, quality: 20 }}
-                  />
+                  <img src={message ? message.img : ''} alt='img' />
                 )}
                 <div
                   className={

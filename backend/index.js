@@ -92,7 +92,12 @@ app.get('/api/userchats/:id', async (req, res) => {
   const userId = req.params.id
   try {
     const userChats = await UserChat.findOne({ userId })
-    res.status(200).send(userChats.chats)
+
+    if (!userChats) {
+      res.status(200).send([])
+    } else {
+      res.status(200).send(userChats.chats)
+    }
   } catch (err) {
     console.log(err)
     res.status(500).send('Error fetching user chats')
@@ -103,7 +108,7 @@ app.get('/api/chats/:cid/:uid', async (req, res) => {
   const chatId = req.params.cid
   const userId = req.params.uid
 
-  console.log(chatId, userId)
+  // console.log(chatId, userId)
   try {
     const chat = await Chat.findOne({ _id: chatId, userId: userId })
     res.status(200).send(chat)
@@ -119,17 +124,18 @@ app.put('/api/chats/:id', async (req, res) => {
 
   const { question, answer, img } = req.body
 
-  console.log('img', img)
+  // console.log('img', img)
 
   if (img) {
     const newItems = [
       {
         role: 'user',
         parts: [{ text: question }],
+        img: img,
       },
       {
         role: 'model',
-        parts: [{ text: answer }, { img: img }],
+        parts: [{ text: answer }],
       },
     ]
 
