@@ -1,0 +1,5 @@
+static:
+  routes:
+    - type: rewrite
+      source: /.* # This matches all routes
+      destination: /index.html # Serve the index.html file for all routes
