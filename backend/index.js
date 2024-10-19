@@ -90,7 +90,7 @@ app.post('/api/chats', async (req, res) => {
       )
     }
 
-    res.status(201).send({ chatId: savedChat.id })
+    res.status(201).send(savedChat.id)
   } catch (e) {
     console.error('Error saving chat or updating user chats:', e)
     res.status(500).send('Failed to save chat or update user chats')
