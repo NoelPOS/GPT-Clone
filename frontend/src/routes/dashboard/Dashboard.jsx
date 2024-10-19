@@ -2,6 +2,7 @@ import React from 'react'
 import './Dashboard.css'
 import { useAuth } from '@clerk/clerk-react'
 import { useNavigate } from 'react-router-dom'
+import model from '../../lib/gemini'
 
 const Dashboard = () => {
   const { userId } = useAuth()
@@ -9,16 +10,20 @@ const Dashboard = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     const text = e.target.text.value
+
+    const ans = await model.generateContent(text)
+
+    const result = ans.response.text()
+
     const chatId = await fetch(`${import.meta.env.VITE_API_URL}/api/chats`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ userId, text }),
-      credentials: 'include',
+      body: JSON.stringify({ userId, text, result }),
     }).then((res) => res.text())
 
-    navigate(`/chat/${chatId}`)
+    navigate(`/dashboard/chat/${chatId}`)
   }
   return (
     <div className='dashboardPage'>

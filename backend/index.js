@@ -42,11 +42,15 @@ app.get('/api/upload', (req, res) => {
 })
 
 app.post('/api/chats', async (req, res) => {
-  const { userId, text } = req.body
+  const { userId, text, result } = req.body
+
   try {
     const newChat = new Chat({
       userId: userId,
-      history: [{ role: 'user', parts: [{ text }] }],
+      history: [
+        { role: 'user', parts: [{ text }] },
+        { role: 'model', parts: [{ text: result }] },
+      ],
     })
     const savedChat = await newChat.save()
 

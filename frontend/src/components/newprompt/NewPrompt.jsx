@@ -6,7 +6,7 @@ import model from '../../lib/gemini'
 import Markdown from 'react-markdown'
 import { useAuth } from '@clerk/clerk-react'
 
-const NewPrompt = ({ chatId, data }) => {
+const NewPrompt = ({ chatId, data, setAdd }) => {
   const { userId } = useAuth()
   const [question, setQuestion] = useState('')
   const [answer, setAnswer] = useState('')
@@ -27,6 +27,7 @@ const NewPrompt = ({ chatId, data }) => {
   })
 
   const add = async (text) => {
+    setAdd((prev) => !prev)
     setQuestion(text)
 
     const result = await chat.sendMessageStream(
@@ -60,9 +61,6 @@ const NewPrompt = ({ chatId, data }) => {
       dbData: {},
       aiData: {},
     })
-
-    // setQuestion('')
-    // setAnswer('')
 
     return updatedChat
   }

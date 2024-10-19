@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react'
 import { useAuth } from '@clerk/clerk-react'
 
 const ChatPage = () => {
+  const [add, setAdd] = useState(false)
   const [chat, setChat] = useState(null)
   const path = useLocation().pathname
   const chatId = path.split('/').pop()
@@ -16,7 +17,7 @@ const ChatPage = () => {
     fetch(`${import.meta.env.VITE_API_URL}/api/chats/${chatId}/${userId}`, {})
       .then((res) => res.json())
       .then((data) => setChat(data))
-  }, [chatId])
+  }, [add])
 
   console.log(chat)
 
@@ -49,7 +50,7 @@ const ChatPage = () => {
               </>
             ))}
 
-          <NewPrompt chatId={chatId} data={chat} />
+          <NewPrompt chatId={chatId} data={chat} setAdd={setAdd} />
         </div>
       </div>
     </div>
