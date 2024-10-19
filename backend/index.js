@@ -195,6 +195,12 @@ app.put('/api/chats/:id', async (req, res) => {
 //   res.sendFile(path.join(__dirname, '../client/dist', 'index.html'))
 // })
 
+app.use(express.static(path.join(__dirname, '../frontend/dist'))) // Point to your dist folder
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/dist', 'index.html')) // Serve index.html for all other routes
+})
+
 app.listen(Port, () => {
   connect()
   console.log(`Server is running on port ${Port}`)
