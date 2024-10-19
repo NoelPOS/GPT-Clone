@@ -32,6 +32,12 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 
+app.use(express.static(path.join(__dirname, '../frontend/dist')))
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/dist', 'index.html'))
+})
+
 app.get('/api/upload', (req, res) => {
   try {
     const result = imagekit.getAuthenticationParameters()
@@ -187,19 +193,12 @@ app.put('/api/chats/:id', async (req, res) => {
   }
 })
 
-// Production
+// PRODUCTION
+// app.use(express.static(path.join(__dirname, "../client/dist")));
 
-// app.use(express.static(path.join(__dirname, '../frontend/build')))
-
-// app.get('*', (req, res) => {
-//   res.sendFile(path.join(__dirname, '../client/dist', 'index.html'))
-// })
-
-app.use(express.static(path.join(__dirname, '../frontend/dist'))) // Point to your dist folder
-
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/dist', 'index.html')) // Serve index.html for all other routes
-})
+// app.get("*", (req, res) => {
+//   res.sendFile(path.join(__dirname, "../client/dist", "index.html"));
+// });
 
 app.listen(Port, () => {
   connect()
