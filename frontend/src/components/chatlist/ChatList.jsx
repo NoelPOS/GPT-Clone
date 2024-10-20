@@ -6,6 +6,7 @@ import { useAuth } from '@clerk/clerk-react'
 
 const ChatList = () => {
   const { userId } = useAuth()
+
   const [chats, setChats] = useState([])
 
   useEffect(() => {

@@ -6,7 +6,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import HomePage from './routes/homepage/HomePage.jsx'
 import Dashboard from './routes/dashboard/Dashboard.jsx'
 import Chat from './routes/chat/Chat.jsx'
-import Signin from './routes/signin/Signin.jsx'
+import Signin from './routes/signup/Signin.jsx'
 import Login from './routes/login/Login.jsx'
 import RootLayout from './layouts/rootLayout/RootLayout.jsx'
 import DashboardLayout from './layouts/dashboardLayout/DashboardLayout.jsx'
@@ -20,7 +20,7 @@ const router = createBrowserRouter([
         element: <HomePage />,
       },
       {
-        path: '/signin',
+        path: '/signup',
         element: <Signin />,
       },
       {

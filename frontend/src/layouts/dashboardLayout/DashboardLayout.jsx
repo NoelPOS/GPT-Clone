@@ -12,7 +12,7 @@ const DashboardLayout = () => {
 
   useEffect(() => {
     if (isLoaded && !userId) {
-      navigate('/signin')
+      navigate('/signup')
     }
   }, [isLoaded, userId, navigate])
 
