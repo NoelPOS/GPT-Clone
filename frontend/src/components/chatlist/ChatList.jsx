@@ -24,7 +24,7 @@ const ChatList = () => {
       <Link to='/'>Contact</Link>
       <hr />
 
-      <span className='title'>Saved Chats</span>
+      <span className='title'>Recent Chats</span>
       <div className='list'>
         {chats.length > 0 &&
           chats.map((chat) => (
