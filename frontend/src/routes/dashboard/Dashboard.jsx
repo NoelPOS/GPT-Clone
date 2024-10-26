@@ -7,10 +7,12 @@ import model from '../../lib/gemini'
 const Dashboard = () => {
   const { userId } = useAuth()
   const navigate = useNavigate()
+  const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    setIsLoading(true)
     setError(null)
 
     try {
@@ -28,7 +30,6 @@ const Dashboard = () => {
           headers: {
             'Content-Type': 'application/json',
           },
-          credentials: 'include', // Important for CORS
           body: JSON.stringify({
             userId,
             text,
@@ -38,14 +39,19 @@ const Dashboard = () => {
       )
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
+        const errorText = await response.text()
+        throw new Error(errorText || `HTTP error! status: ${response.status}`)
       }
 
       const chatId = await response.text()
       navigate(`/dashboard/chat/${chatId}`)
     } catch (error) {
       console.error('Error:', error)
-      setError('Failed to process your request. Please try again.')
+      setError(
+        error.message || 'Failed to process your request. Please try again.'
+      )
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -73,12 +79,20 @@ const Dashboard = () => {
       </div>
       <div className='formContainer'>
         <form onSubmit={handleSubmit}>
-          <input type='text' name='text' placeholder='Ask me anything...' />
-          <button type='submit'>
+          <input
+            type='text'
+            name='text'
+            placeholder='Ask me anything...'
+            disabled={isLoading}
+          />
+          <button type='submit' disabled={isLoading}>
             <img src='/arrow.png' alt='Submit' />
           </button>
         </form>
         {error && <div className='error-message'>{error}</div>}
+        {isLoading && (
+          <div className='loading-message'>Processing your request...</div>
+        )}
       </div>
     </div>
   )
