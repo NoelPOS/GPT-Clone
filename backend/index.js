@@ -33,6 +33,7 @@ const app = express()
 app.use(
   cors({
     origin: 'https://gpt-clone-v2.vercel.app',
+    credentials: true,
   })
 )
 app.use(express.json())
