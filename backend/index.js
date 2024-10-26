@@ -110,7 +110,7 @@ app.get('/api/userchats/:id', async (req, res) => {
     res.status(200).send(userChats.chats)
   } catch (e) {
     console.error('Error fetching user chats:', e)
-    res.status(500).send('Failed to fetch user chats')
+    res.status(500).send('Failed to fetch user chats', e.message)
   }
 })
 
