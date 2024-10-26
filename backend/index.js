@@ -29,7 +29,7 @@ const connect = async () => {
 }
 
 const app = express()
-app.use(cors())
+
 app.use(
   cors({
     origin: 'https://gpt-clone-v2.vercel.app',
