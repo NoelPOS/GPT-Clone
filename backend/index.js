@@ -32,8 +32,14 @@ const app = express()
 
 app.use(
   cors({
-    origin: 'https://gpt-clone-v2.vercel.app',
+    origin: [
+      'https://gpt-clone-v2.vercel.app',
+      'https://gptclone-backend-three.vercel.app',
+      'http://localhost:5173', // Add local development URL if needed
+    ],
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
   })
 )
 app.use(express.json())
